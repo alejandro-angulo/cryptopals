@@ -52,8 +52,7 @@ def main():
     IV = bytes(16)
 
     test = CBC( AES.new(key, AES.MODE_ECB), IV )
-    #encrypted = test.encrypt(contents)
-    #decrypted = test.decrypt(encrypted)
+    
     decrypted = test.decrypt(contents)
     print(decrypted)
     encrypted = test.encrypt(decrypted)
