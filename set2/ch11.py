@@ -21,9 +21,7 @@ def oracle(plaintext, num_bytes):
     cipher = AES.new(key, AES.MODE_ECB)
     
     plaintext = rand_padding(plaintext)
-    print(plaintext)
     plaintext = ch9.pad_PCKS7(plaintext, num_bytes)
-    print(plaintext)
 
     if random.randint(0, 1) == 1:
         print("Using CBC")
