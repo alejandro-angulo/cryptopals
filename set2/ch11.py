@@ -28,7 +28,7 @@ def oracle(plaintext, num_bytes):
         IV = rand_bytes(num_bytes)
         cipher = ch10.CBC(cipher, IV)
     else:
-        print("Using EBC")
+        print("Using ECB")
 
     return cipher.encrypt(plaintext)
 
