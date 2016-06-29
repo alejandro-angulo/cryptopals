@@ -17,7 +17,7 @@ class CBC:
       
         for plainblock in plainblocks:
             xortext = b''
-            for i in range( len(prev) ):
+            for i in range( len(plainblock) ):
                 xortext += bytes([ plainblock[i] ^ prev[i] ])
 
             cipherblock = self._ECB.encrypt( xortext )
@@ -35,7 +35,7 @@ class CBC:
             xortext = b''
 
             plainblock = self._ECB.decrypt(cipherblock)
-            for i in range( len(prev) ):
+            for i in range( len(plainblock) ):
                 xortext += bytes([ plainblock[i] ^ prev[i] ])
 
             plaintext += xortext
