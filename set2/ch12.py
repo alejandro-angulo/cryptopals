@@ -3,10 +3,10 @@ import binascii
 import ch9
 import ch11
 
-postfix = b'''Um9sbGluJyBpbiBteSA1LjAKV2l0aCBteSByYWctdG9wIGRvd24gc28gbXkg
-    aGFpciBjYW4gYmxvdwpUaGUgZ2lybGllcyBvbiBzdGFuZGJ5IHdhdmluZyBq
-    dXN0IHRvIHNheSBoaQpEaWQgeW91IHN0b3A/IE5vLCBJIGp1c3QgZHJvdmUg
-    YnkK'''
+postfix = b'Um9sbGluJyBpbiBteSA1LjAKV2l0aCBteSByYWctdG9wIGRvd24gc28gbXkg'
+postfix += b'aGFpciBjYW4gYmxvdwpUaGUgZ2lybGllcyBvbiBzdGFuZGJ5IHdhdmluZyBq'
+postfix += b'dXN0IHRvIHNheSBoaQpEaWQgeW91IHN0b3A/IE5vLCBJIGp1c3QgZHJvdmUg'
+postfix += b'YnkK'
 
 key = None
 
@@ -51,9 +51,9 @@ def byte_by_byte(oracle, known, blk_sz):
 
     for j in range(256):
         plaintext = short_str + known + bytes([j])
-        ciphertext = enc_oracle(plaintext)[0:blk_sz]
+        ciphertext = enc_oracle(plaintext)[:blk_sz]
 
-        if test[0:len(short_str) + 1 + len(known)] == ciphertext:
+        if test[:len(short_str) + 1 + len(known)] == ciphertext:
             return bytes([j])
 
     return None
@@ -65,8 +65,8 @@ def main():
 
     string = b''
     while True:
-        ret = byte_by_byte(enc_oracle, string, blk_sz)
-        if ret == None:
+        ret = byte_by_byte(enc_oracle, string, 10*blk_sz)
+        if ret is None:
             break
 
         string += ret
