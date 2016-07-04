@@ -42,46 +42,37 @@ def decrypt_check_pad(ciphertext):
 
     return ch15.isValid_PKCS7(plaintext)
 
-def break_block(cipherblock, blk_sz):
-    print(cipherblock)
+def break_block(cipherblocks, blk_sz):
     intermediate = b''
     plaintext = b''
     for i in range(1, blk_sz + 1):
         zeros = bytes(blk_sz - i)
         for j in range(256):
             fake_ciphertext = zeros + bytes([j]) + bytes([(c^i) for c in intermediate])
-            ret = decrypt_check_pad(fake_ciphertext + cipherblock)
+            ret = decrypt_check_pad(fake_ciphertext + cipherblocks[1])
             if ret:
-                print(j)
-                print(i)
-                #print(j^i)
-                #print(fake_ciphertext + bytes([j] * i) + cipherblock)
-                #print('--')
                 intermediate = bytes([j ^ i]) + intermediate
-                #print(cipherblock[i - 1] ^ intermediate)
-                plaintext = bytes([cipherblock[-i] ^ intermediate[-i]]) + plaintext
+                plaintext = bytes([cipherblocks[0][-i] ^ intermediate[-i]]) + plaintext
                 break
-            if j == 255:
-                print(i)
-                print(intermediate)
-                print(fake_ciphertext[-1])
-                raise Exception('No match found.')
 
     return plaintext
 
 def break_oracle(ciphertext, blk_sz):
+    global iv
+
     plaintext = b''
     blocks = [ciphertext[i:i+blk_sz] for i in range(0, len(ciphertext), blk_sz)]
 
-    #for j in range( len(blocks)-1, 1, -1 ):
-    plaintext = break_block(blocks[ len(blocks) - 1 ], blk_sz) + plaintext
+    for i in range( len(blocks), 1, -1 ):
+        plaintext = break_block(blocks[i-2:i], blk_sz) + plaintext
+    plaintext = break_block([iv, blocks[0]], blk_sz) + plaintext
 
     return plaintext
 
 def main():
     enc = enc_oracle()
     print(enc)
-    print( break_oracle(enc, 16) )
+    print( ch15.unpad_PKCS7(break_oracle(enc, 16)) )
 
 if __name__ == '__main__':
     main()
