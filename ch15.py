@@ -1,11 +1,26 @@
 def isValid_PKCS7(s):
     pad_len = s[-1]
 
+    if pad_len == 0:
+        return False
+
     for i in range(1,pad_len):
         if s[-1-i] != pad_len:
             return False
 
     return True
+
+def unpad_PKCS7(s):
+    pad_len = s[-1]
+
+    if pad_len == 0:
+        raise ValueError('Invalid padding length.')
+
+    for i in range(1,pad_len):
+        if s[-1-i] != pad_len:
+            raise ValueError('Invalid padding.')
+
+    return s[:-pad_len]
 
 def main():
     tests = [
